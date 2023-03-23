@@ -7,8 +7,7 @@ public class Simulation{
   private Traffic traffic;
   private Graphics graphics;
 
-  public static void tick(){
+  public static void tick() {
     
   }
-
 }

@@ -5,6 +5,7 @@ import java.lang.*;
 public class Map{
 
   private int[][] roads;
+  private int[] trafficLight;
   private int time=0;
 
   private static void tick(){

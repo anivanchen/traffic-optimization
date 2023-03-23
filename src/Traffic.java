@@ -2,13 +2,13 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Traffic{
+public class Traffic {
 
   private ArrayList<Car> cars;
   private Map map;
-  private ArrayList<boolean> reachedGoal;
+  private ArrayList<Boolean> reachedGoal;
 
-  private static void tick(){
+  private static void tick() {
     
   }
 }
