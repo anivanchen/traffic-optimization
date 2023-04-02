@@ -37,13 +37,22 @@ public class Car {
     if(trafficSignal.getCurrentCycle() == false){
       slow(0);
     }
-    if (velocity + acceleration * dt < 0) {
-      current.x -= 0.5 * velocity * velocity / acceleration;
-      velocity = 0;
-    } else {
+    if(velocity > maxVelocity){
+      double d = velocity * dt;
+      velocity -= acceleration * dt;
+      current.x += d + 0.5 * acceleration * dt * dt;
+    } else (velocity < maxVelocity){
+      double d = velocity * dt;
       velocity += acceleration * dt;
-      current.x += velocity * dt + acceleration * dt * dt / 2;
+      current.x += d + 0.5 * acceleration * dt * dt;
     }
+    // if (velocity + acceleration * dt < 0) {
+    //   current.x -= 0.5 * velocity * velocity / acceleration;
+    //   velocity = 0;
+    // } else {
+    //   velocity += acceleration * dt;
+    //   current.x += velocity * dt + acceleration * dt * dt / 2;
+    // }
 
     double alpha = 0;
     double dX = leadCar.getLocation().x - current.x - leadCar.getLength();
