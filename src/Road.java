@@ -3,8 +3,8 @@ import java.awt.geom.*;
 
 public class Road {
 
-    private Location start;
-    private Location end;
+    public Location start;
+    public Location end;
 
     private double length;
     private double sin;
@@ -38,7 +38,7 @@ public class Road {
     public boolean getTrafficSignalState() {
         if (hasTrafficSignal) {
             int i = trafficSignalGroup;
-            return trafficSignal.getCurrentCycle()[i];
+            return trafficSignal.getCurrentCycle();
         }
         return true;
     }
@@ -53,7 +53,7 @@ public class Road {
 
             // update other vehicles
             for (int i = 1; i < n; i++) {
-                Car cars = this.vehicles.get(i - 1);
+                Car car = this.vehicles.get(i - 1);
                 vehicles.get(i).update(dt);
             }
 
@@ -64,7 +64,7 @@ public class Road {
                 }
             } else {
                 if (vehicles.get(0) >= length - trafficSignal.getSlowDistance()) {
-                    vehicles.get(0).slow(trafficSignal.getSlowFactor() * vehicles.get(0).getMaxVelocity();
+                    vehicles.get(0).slow(trafficSignal.getSlowFactor() * vehicles.get(0).getMaxVelocity());
                 }
                 if (vehicles.get(0).getLocation().x >= length - trafficSignal.getStopDistance() &&
                         this.vehicles.get(0).getLocation().x <= length - trafficSignal.getStopDistance() / 2) {

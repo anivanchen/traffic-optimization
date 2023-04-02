@@ -8,7 +8,15 @@ public class Map{
   private int[] trafficLight;
   private int time=0;
 
-  private static void tick(){
+  public Map(int x, int y){
+    for(int i=0;i<x;i++){
+      for(int j=0;j<y;j++){
+        
+      }
+    }
+  }
+
+  private void tick(){
     time++;
   }
 
