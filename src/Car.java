@@ -3,8 +3,8 @@ import java.io.*;
 import java.lang.*;
 
 public class Car {
-  private Location start, current, end;
-  private ArrayList<Location> path;
+  private Location start, current, end, globalGoal;
+  private ArrayList<Location> localGoals;
   private double length, angle, velocity, acceleration, maxAngle, maxVelocity, currentMaxVelocity, maxAcceleration;
 
   private boolean stopped;
@@ -14,7 +14,7 @@ public class Car {
     this.current = start;
     this.end = end;
 
-    this.path = new ArrayList<Location>();
+    this.localGoals = new ArrayList<Location>();
 
     this.length = length;
 
@@ -41,7 +41,7 @@ public class Car {
       double d = velocity * dt;
       velocity -= acceleration * dt;
       current.x += d + 0.5 * acceleration * dt * dt;
-    } else (velocity < maxVelocity){
+    } else if (velocity < maxVelocity){
       double d = velocity * dt;
       velocity += acceleration * dt;
       current.x += d + 0.5 * acceleration * dt * dt;
