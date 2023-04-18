@@ -5,6 +5,7 @@ import java.lang.*;
 public class Car {
   private Location start, current, end, globalGoal;
   private ArrayList<Location> localGoals;
+  private Map map;
   private double length, angle, velocity, acceleration, maxAngle, maxVelocity, currentMaxVelocity, maxAcceleration;
 
   private boolean stopped;
@@ -106,4 +107,21 @@ public class Car {
   public void unslow() {
     this.currentMaxVelocity = maxVelocity;
   }
+
+  public void bestPath(Location current){
+    LinkedList<LinkedList<int[]>> paths = new LinkedList<LinkedList<int[]>>();
+    if(current.x-1>=0&&map.location(current.x-1, current.y)!=0){
+
+    }
+    if(current.x+1<map.row()&&map.location(current.x+1, current.y)!=0){
+
+    }
+    if(current.y-1>=0&&map.location(current.x, current.y-1)!=0){
+
+    }
+    if(current.y+1<map.column()&&map.location(current.x, current.y+1)!=0){
+
+    }
+  }
+
 }
