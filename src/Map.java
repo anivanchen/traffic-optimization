@@ -6,7 +6,7 @@ public class Map{
 
   private int[][] roads;
   private int[] trafficLight;
-  private int time=0;
+  private int time = 0;
 
   public Map(int x, int y){
     roads = new int[x][y];

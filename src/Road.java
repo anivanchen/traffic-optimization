@@ -1,14 +1,14 @@
 import java.util.*;
 import java.awt.geom.*;
+import java.awt.*;
 
 public class Road {
 
-    public Location start;
-    public Location end;
+    private Location start;
+    private Location end;
 
     private double length;
-    private double sin;
-    private double cos;
+    private Location normal;
 
     private TrafficSignal trafficSignal;
     private boolean hasTrafficSignal;
@@ -23,10 +23,17 @@ public class Road {
         initProps();
     }
 
+    public Location getStart() {
+        return start;
+    }
+
+    public Location getEnd() {
+        return end;
+    }
+
     private void initProps() {
-        this.length = Point2D.distance(start.x, start.y, end.x, end.y);
-        this.sin = (end.y - start.y) / length;
-        this.cos = (end.x - start.x) / length;
+        this.length = Point2D.distance(start.getX(), start.getY(), end.getX(), end.getY());
+        this.normal = end.normalize(start);
         this.hasTrafficSignal = false;
     }
 
@@ -38,7 +45,7 @@ public class Road {
     public boolean getTrafficSignalState() {
         if (hasTrafficSignal) {
             int i = trafficSignalGroup;
-            return trafficSignal.getCurrentCycle();
+            return trafficSignal.getCurrentCycle() == Color.GREEN;
         }
         return true;
     }
@@ -63,11 +70,11 @@ public class Road {
                     car.unslow();
                 }
             } else {
-                if (vehicles.get(0) >= length - trafficSignal.getSlowDistance()) {
+                if (vehicles.get(0).getLocation().getX() >= length - trafficSignal.getSlowDistance()) {
                     vehicles.get(0).slow(trafficSignal.getSlowFactor() * vehicles.get(0).getMaxVelocity());
                 }
-                if (vehicles.get(0).getLocation().x >= length - trafficSignal.getStopDistance() &&
-                        this.vehicles.get(0).getLocation().x <= length - trafficSignal.getStopDistance() / 2) {
+                if (vehicles.get(0).getLocation().getX() >= length - trafficSignal.getStopDistance() &&
+                        this.vehicles.get(0).getLocation().getX() <= length - trafficSignal.getStopDistance() / 2) {
                     vehicles.get(0).stop();
                 }
             }

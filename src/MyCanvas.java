@@ -3,15 +3,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.border.Border;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-class MyCanvas extends JFrame {
-    MyCanvas() {
+public class MyCanvas extends JFrame{
+
+    public MyCanvas(ArrayList<Car> cars, ArrayList<TrafficSignal> trafficSignals) {
         super("Canvas");
         // create a empty canvas
         Canvas c = new Canvas() {
@@ -40,7 +40,7 @@ class MyCanvas extends JFrame {
                 int road_index_width = squareSize * 5;
                 int road_index_height = squareSize * 5;
                 int road_index_height_2 = squareSize * 2;
-                int car = squareSize * 2;
+                int carSize = squareSize * 2;
 
                 for (int x = 0; x < canvasWidth; x += squareSize) {
                     for (int y = 0; y < canvasHeight; y += squareSize) {
@@ -66,6 +66,23 @@ class MyCanvas extends JFrame {
                         g.drawRect(x, y, squareSize, squareSize);
                     }
                 }
+
+                for (int i = 0; i < cars.size(); i++) {
+                    Car car = cars.get(i);
+                    int x = car.getLocation().getX();
+                    int y = car.getLocation().getY();
+                    g.setColor(Color.black);
+                    g.fillRect(x, y, carSize, carSize);
+                }
+
+                for (int i = 0; i < trafficSignals.size(); i++) {
+                    TrafficSignal trafficSignal = trafficSignals.get(i);
+                    int x = trafficSignal.getX();
+                    int y = trafficSignal.getY();
+                    g.setColor(trafficSignal.getCurrentCycle());
+                    g.fillRect(x, y, carSize, carSize);
+                }
+
                 // create a JPanel with a raised bevel border
                 // JPanel panel = new JPanel();
                 // Border border = BorderFactory.createRaisedBevelBorder();
