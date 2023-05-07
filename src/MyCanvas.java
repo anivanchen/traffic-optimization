@@ -2,6 +2,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.*;
 import java.lang.*;
@@ -11,14 +12,16 @@ import javax.swing.*;
 
 public class MyCanvas extends JFrame{
 
+    private Canvas c;
+
     public MyCanvas(ArrayList<Car> cars, ArrayList<TrafficSignal> trafficSignals) {
         super("Canvas");
         // create a empty canvas
-        Canvas c = new Canvas() {
+        c = new Canvas() {
             // paint the canvas
             public void paint(Graphics g) {
-                int canvasWidth = getWidth();
-                int canvasHeight = getHeight();
+                int canvasWidth = 800;
+                int canvasHeight = 800;
                 int squareSize = Math.min(canvasWidth, canvasHeight) / 10;
 
                 // set color to blue
@@ -79,8 +82,13 @@ public class MyCanvas extends JFrame{
                     TrafficSignal trafficSignal = trafficSignals.get(i);
                     int x = trafficSignal.getX();
                     int y = trafficSignal.getY();
-                    g.setColor(trafficSignal.getCurrentCycle());
-                    g.fillRect(x, y, carSize, carSize);
+                    Polygon triangle = new Polygon();
+                    triangle.addPoint(x,y);
+                    triangle.addPoint(x+10,y);
+                    triangle.addPoint(x+5,y+5);
+                    g.setColor(trafficSignal.getColors().get(0));
+                    g.fillPolygon(triangle);
+                    // g.fillRect(x, y, carSize, carSize);
                 }
 
                 // create a JPanel with a raised bevel border
@@ -110,4 +118,7 @@ public class MyCanvas extends JFrame{
         setVisible(true);
     }
 
+    public void tick() {
+        c.repaint();
+    }
 }

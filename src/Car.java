@@ -32,6 +32,10 @@ public class Car {
     this.stopped = false;
   }
 
+  public void tick() {
+    update(1);
+  }
+
   public void update(double dt) {
     if (stopped) {
       return;
@@ -56,9 +60,10 @@ public class Car {
     if(leadCar.velocity > velocity){
       slow(leadCar.velocity);
     }
-    if(trafficSignal.getCurrentCycle() != Color.GREEN){
-      slow(0);
-    }
+    //TODO: FIX THIS
+    // if(trafficSignal.getCurrentCycle() != Color.GREEN){
+    //   slow(0);
+    // }
     if(velocity > maxVelocity){
       double d = velocity * dt;
       velocity -= acceleration * dt;
