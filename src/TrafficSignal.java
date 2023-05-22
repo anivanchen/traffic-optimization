@@ -9,8 +9,10 @@ public class TrafficSignal {
     private int slowDistance;
     private int stopDistance;
     private int slowFactor;
+    private Location location;
 
     public TrafficSignal(Location loc) {
+        location = loc;
         int slowDistance = 10;
         int stopDistance = 5;
         int slowFactor = 10;
@@ -104,5 +106,9 @@ public class TrafficSignal {
 
     public int getY() {
         return y;
+    }
+
+    public Location getLocation(){
+        return location;
     }
 }

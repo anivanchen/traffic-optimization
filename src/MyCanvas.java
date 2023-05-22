@@ -63,7 +63,10 @@ public class MyCanvas extends JFrame{
                 // number for each side of the road, for the four squares in a traffic light, and for out of bounds, non-road
                 // area. 
 
-                ArrayList<int> grid_rep = new ArrayList<int>();
+                int[][] grid_rep = new int[canvasHeight/squareSize*2][canvasHeight/squareSize*2];
+
+                //keeping track of traffic_signals
+                ArrayList<TrafficSignal> traffic_signals= new ArrayList<TrafficSignal>();
 
                 for (int x = 0; x < canvasWidth; x += squareSize) {
                     for (int y = 0; y < canvasHeight; y += squareSize) {
@@ -74,6 +77,7 @@ public class MyCanvas extends JFrame{
                                 || (already_found_road_at_given_position && y == road.getStart().getY() && y == road.getEnd().getY())) {
                                     // This checks if we have already identified a road at this position and we have now found another road here
                                     TrafficSignal new_traffic_signal = new TrafficSignal(new Location(x,y));
+                                    traffic_signals.add(new_traffic_signal);
                                     new_traffic_signal.tick(current_time);
                                     System.out.println("Ticking with value " + current_time);
                                     
@@ -81,7 +85,7 @@ public class MyCanvas extends JFrame{
                                     Polygon triangle1 = new Polygon();
                                     triangle1.addPoint(x,y); // top left corner
                                     triangle1.addPoint(x+squareSize,y);
-                                    triangle1.addPoint(x+squareSize/2,y+squareSize/2);
+                                    triangle1.addPoint(x+squareSize/2,y+squareSize/2);                              
 
                                     // Right
                                     Polygon triangle2 = new Polygon();
@@ -94,7 +98,7 @@ public class MyCanvas extends JFrame{
                                     triangle3.addPoint(x+squareSize,y+squareSize);
                                     triangle3.addPoint(x,y+squareSize);
                                     triangle3.addPoint(x+squareSize/2,y+squareSize/2);
-
+                                    
                                     // Left
                                     Polygon triangle4 = new Polygon();
                                     triangle4.addPoint(x,y);
@@ -103,6 +107,10 @@ public class MyCanvas extends JFrame{
 
 
                                     // TODO: add four cells here for the traffic light
+                                    grid_rep[2*y][2*x]=3; 
+                                    grid_rep[2*y][2*x+1]=4; 
+                                    grid_rep[2*y+1][2*x+1]=5; 
+                                    grid_rep[2*y+1][2*x]=6; 
 
 
 
@@ -123,6 +131,10 @@ public class MyCanvas extends JFrame{
                                 // Check road
 
                                 // TODO: add four cells for the road
+                                grid_rep[2*y][2*x]=1; 
+                                grid_rep[2*y][2*x+1]=1; 
+                                grid_rep[2*y+1][2*x+1]=2; 
+                                grid_rep[2*y+1][2*x]=2; 
 
 
                                 already_found_road_at_given_position = true;
@@ -138,6 +150,8 @@ public class MyCanvas extends JFrame{
                         }
                     }
                 }
+
+                //System.out.println(traffic_signals);
 
                 for (int i = 0; i < cars.size(); i++) {
                     Car car = cars.get(i);
