@@ -1,12 +1,10 @@
 public class Location {
 
     private int x, y;
-    private boolean hasTrafficSignal;
 
-    public Location(int x, int y, boolean hasTrafficSignal) {
+    public Location(int x, int y) {
         this.x = x;
         this.y = y;
-        this.hasTrafficSignal = hasTrafficSignal;
     }
 
     public int[] get() {
@@ -32,6 +30,6 @@ public class Location {
     }
 
     public Location normalize(Location other) {
-        return new Location((int) ((x - other.getX()) / distance(other)), (int) ((y - other.getY()) / distance(other)), hasTrafficSignal);
+        return new Location((int) ((x - other.getX()) / distance(other)), (int) ((y - other.getY()) / distance(other)));
     }
 }

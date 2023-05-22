@@ -4,22 +4,24 @@ import java.util.*;
 public class TrafficSignal {
     private ArrayList<Color> color;
     private int x, y;
-    private Road road;
     private int time;
 
     private int slowDistance;
     private int stopDistance;
     private int slowFactor;
 
-    public TrafficSignal(Road road, int slowDistance, int stopDistance, int slowFactor, boolean useDefault) {
+    public TrafficSignal(Location loc) {
+        int slowDistance = 10;
+        int stopDistance = 5;
+        int slowFactor = 10;
+        boolean useDefault = true;
         this.color = new ArrayList<Color>();
         this.color.add(Color.GREEN);
         this.color.add(Color.RED);
         this.color.add(Color.GREEN);
         this.color.add(Color.RED);
-        this.road = road;
-        this.x = road.getEnd().getX();
-        this.y = road.getEnd().getY();
+        this.x = loc.getX();
+        this.y = loc.getY();
         
         this.slowDistance = slowDistance;
         this.stopDistance = stopDistance;
@@ -29,18 +31,18 @@ public class TrafficSignal {
 
     public void tick(int current_seconds) {
         int seconds_mod = current_seconds % 60;
-        if (seconds_mod <= 15) {
+        if (seconds_mod <= 5) {
             this.color.set(0, Color.GREEN);
             this.color.set(1, Color.RED);
             this.color.set(2, Color.GREEN);
             this.color.set(3, Color.RED);
             //  = new ArrayList<Color>({Color.GREEN, Color.RED, Color.GREEN, Color.RED});
-        } else if (seconds_mod <= 30) {
+        } else if (seconds_mod <= 10) {
             this.color.set(0, Color.YELLOW);
             this.color.set(1, Color.RED);
             this.color.set(2, Color.YELLOW);
             this.color.set(3, Color.RED);
-        } else if (seconds_mod <= 45) {
+        } else if (seconds_mod <= 15) {
             this.color.set(0, Color.RED);
             this.color.set(1, Color.GREEN);
             this.color.set(2, Color.RED);
