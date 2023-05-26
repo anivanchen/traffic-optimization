@@ -107,10 +107,10 @@ public class MyCanvas extends JFrame{
 
 
                                     // TODO: add four cells here for the traffic light
-                                    grid_rep[2*y][2*x]=3; 
-                                    grid_rep[2*y][2*x+1]=4; 
-                                    grid_rep[2*y+1][2*x+1]=5; 
-                                    grid_rep[2*y+1][2*x]=6; 
+                                    grid_rep[2*y][2*x]=5; 
+                                    grid_rep[2*y][2*x+1]=6; 
+                                    grid_rep[2*y+1][2*x+1]=7; 
+                                    grid_rep[2*y+1][2*x]=8; 
 
 
 
@@ -131,10 +131,22 @@ public class MyCanvas extends JFrame{
                                 // Check road
 
                                 // TODO: add four cells for the road
-                                grid_rep[2*y][2*x]=1; 
-                                grid_rep[2*y][2*x+1]=1; 
-                                grid_rep[2*y+1][2*x+1]=2; 
-                                grid_rep[2*y+1][2*x]=2; 
+
+                                //1 is top 2 is bottom
+                                if(x == road.getStart().getX() && x == road.getEnd().getX()){
+                                    grid_rep[2*y][2*x]=1; 
+                                    grid_rep[2*y][2*x+1]=1; 
+                                    grid_rep[2*y+1][2*x+1]=2; 
+                                    grid_rep[2*y+1][2*x]=2;
+                                } 
+                                
+                                //3 is left 4 is right
+                                if(y == road.getStart().getY() && y == road.getEnd().getY()){
+                                    grid_rep[2*y][2*x]=3; 
+                                    grid_rep[2*y][2*x+1]=4; 
+                                    grid_rep[2*y+1][2*x+1]=4; 
+                                    grid_rep[2*y+1][2*x]=3;
+                                } 
 
 
                                 already_found_road_at_given_position = true;
