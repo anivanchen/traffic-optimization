@@ -14,10 +14,67 @@ public class MyCanvas extends JFrame{
 
     private Canvas c;
     public int current_time = 0;
+    private ArrayList<Car> cars;
+    private ArrayList<Road> roads;
+
+    public void set_grid_representation() {
+        int canvasWidth = 800;
+        int canvasHeight = 800;
+        int squareSize = Math.min(canvasWidth, canvasHeight) / 10;
+
+        int[][] grid_rep = new int[(canvasHeight/squareSize)*2][(canvasHeight/squareSize)*2];
+
+        for (int x = 0; x < canvasWidth; x += squareSize) {
+            for (int y = 0; y < canvasHeight; y += squareSize) {
+                boolean already_found_road_at_given_position = false;
+                for (Road road : this.roads) {
+                    // Check stoplight
+                    if ((already_found_road_at_given_position && x == road.getStart().getX() && x == road.getEnd().getX())
+                        || (already_found_road_at_given_position && y == road.getStart().getY() && y == road.getEnd().getY())) {
+                            // TODO: add four cells here for the traffic light
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)]=5; // top left
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)+1]=6;  // top right
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)+1]=7;  // bottom right
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)]=8; // bottom left
+
+                    } else if (x == road.getStart().getX() && x == road.getEnd().getX() || y == road.getStart().getY() && y == road.getEnd().getY()) {
+                        // Check road
+                        //1 is top 2 is bottom
+                        if(x == road.getStart().getX() && x == road.getEnd().getX()){
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)]=1; 
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)]=1; 
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)+1]=2; 
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)+1]=2;
+                        } 
+                        
+                        //3 is left 4 is right
+                        if(y == road.getStart().getY() && y == road.getEnd().getY()){
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)]=3; 
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)]=4; 
+                            grid_rep[2*(y/squareSize)+1][2*(x/squareSize)+1]=4; 
+                            grid_rep[2*(y/squareSize)][2*(x/squareSize)+1]=3;
+                        } 
+
+                        already_found_road_at_given_position = true;
+                    }
+                }
+            }
+        }
+
+        System.out.println("GRID REPRESENTATION:");
+        for (int[] elem : grid_rep) {
+            System.out.println(Arrays.toString(elem));
+        }
+        for (Car car_instance: this.cars) {
+            car_instance.set_grid_rep(grid_rep);
+        }
+    }
 
     public MyCanvas(ArrayList<Car> cars, ArrayList<Road> roads) {
         super("Canvas");
-        // create a empty canvas
+        this.cars = cars;
+        this.roads = roads;
+
         c = new Canvas() {
             // paint the canvas
             public void paint(Graphics g) {
@@ -31,16 +88,6 @@ public class MyCanvas extends JFrame{
                 // draw squares
                 Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow };
                 int colorIndex = 0;
-
-                // // draw squares
-                // for (int x = 0; x < canvasWidth; x += squareSize) {
-                // for (int y = 0; y < canvasHeight; y += squareSize) {
-                // g.setColor(colors[colorIndex % colors.length]);
-                // g.fillRect(x, y, squareSize, squareSize);
-                // colorIndex++;
-                // }
-                // }
-                // draw squares
 
                 // Here are our three roads
                 // // Road 1 is at x=5
@@ -63,13 +110,16 @@ public class MyCanvas extends JFrame{
                 // number for each side of the road, for the four squares in a traffic light, and for out of bounds, non-road
                 // area. 
 
-                int[][] grid_rep = new int[canvasHeight/squareSize*2][canvasHeight/squareSize*2];
+
+                // We have a canvas that is 800, 800
+                // In our for loop, x goes from 0 -> 720 and increments by 80
+                // We want the dimensions of grid_rep to be (2 * (canvas_width / square size), 2 * (canvas_height / square size))
 
                 //keeping track of traffic_signals
                 ArrayList<TrafficSignal> traffic_signals= new ArrayList<TrafficSignal>();
 
-                for (int x = 0; x < canvasWidth; x += squareSize) {
-                    for (int y = 0; y < canvasHeight; y += squareSize) {
+                for (int y = 0; y < canvasWidth; y += squareSize) {
+                    for (int x = 0; x < canvasHeight; x += squareSize) {
                         boolean already_found_road_at_given_position = false;
                         for (Road road : roads) {
                             // Check stoplight
@@ -79,7 +129,7 @@ public class MyCanvas extends JFrame{
                                     TrafficSignal new_traffic_signal = new TrafficSignal(new Location(x,y));
                                     traffic_signals.add(new_traffic_signal);
                                     new_traffic_signal.tick(current_time);
-                                    System.out.println("Ticking with value " + current_time);
+                                    // System.out.println("Ticking with value " + current_time);
                                     
                                     // Top
                                     Polygon triangle1 = new Polygon();
@@ -105,17 +155,6 @@ public class MyCanvas extends JFrame{
                                     triangle4.addPoint(x,y+squareSize);
                                     triangle4.addPoint(x+squareSize/2,y+squareSize/2);
 
-
-                                    // TODO: add four cells here for the traffic light
-                                    grid_rep[2*y][2*x]=5; 
-                                    grid_rep[2*y][2*x+1]=6; 
-                                    grid_rep[2*y+1][2*x+1]=7; 
-                                    grid_rep[2*y+1][2*x]=8; 
-
-
-
-
-
                                     ArrayList<Color> current_color_set = traffic_signals.get(traffic_signals.size() - 1).getColors();
 
                                     g.setColor(current_color_set.get(0));
@@ -129,26 +168,6 @@ public class MyCanvas extends JFrame{
 
                             } else if (x == road.getStart().getX() && x == road.getEnd().getX() || y == road.getStart().getY() && y == road.getEnd().getY()) {
                                 // Check road
-
-                                // TODO: add four cells for the road
-
-                                //1 is top 2 is bottom
-                                if(x == road.getStart().getX() && x == road.getEnd().getX()){
-                                    grid_rep[2*y][2*x]=1; 
-                                    grid_rep[2*y][2*x+1]=1; 
-                                    grid_rep[2*y+1][2*x+1]=2; 
-                                    grid_rep[2*y+1][2*x]=2;
-                                } 
-                                
-                                //3 is left 4 is right
-                                if(y == road.getStart().getY() && y == road.getEnd().getY()){
-                                    grid_rep[2*y][2*x]=3; 
-                                    grid_rep[2*y][2*x+1]=4; 
-                                    grid_rep[2*y+1][2*x+1]=4; 
-                                    grid_rep[2*y+1][2*x]=3;
-                                } 
-
-
                                 already_found_road_at_given_position = true;
                                 g.setColor(Color.gray);
                                 g.fillRect(x,y,squareSize,squareSize);
@@ -163,14 +182,12 @@ public class MyCanvas extends JFrame{
                     }
                 }
 
-                //System.out.println(traffic_signals);
-
                 for (int i = 0; i < cars.size(); i++) {
                     Car car = cars.get(i);
                     int x = car.getLocation().getX();
                     int y = car.getLocation().getY();
                     g.setColor(Color.black);
-                    g.fillRect(x, y, 30, 10);
+                    g.fillRect(y, x, 30, 10);
                 }
                 // create a JPanel with a raised bevel border
                 // JPanel panel = new JPanel();

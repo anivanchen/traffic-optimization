@@ -1,6 +1,7 @@
 import java.util.*;
 import java.awt.geom.*;
 import java.awt.*;
+import java.lang.*;
 
 public class Road {
 
@@ -43,10 +44,10 @@ public class Road {
     }
 
     public boolean getTrafficSignalState() {
-        if (hasTrafficSignal) {
-            int i = trafficSignalGroup;
-            return trafficSignal.getCurrentCycle() == Color.GREEN;
-        }
+        // if (hasTrafficSignal) {
+        //     int i = trafficSignalGroup;
+        //     return trafficSignal.getCurrentCycle() == Color.GREEN;
+        // }
         return true;
     }
 

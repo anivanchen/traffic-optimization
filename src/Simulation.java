@@ -21,7 +21,10 @@ public class Simulation {
     roads.add(road3);
 
     // Create cars
-    Car car = new Car(new Location (200,200), new Location(600, 600), 10, 0.0, 5, 5);
+
+    // start: 5,1
+    // dest: 11,17
+    Car car = new Car(new Location (200,40), new Location(440, 680), 10, 0.0, 15, 5);
     cars = new ArrayList<Car>();
     cars.add(car);
 
@@ -32,7 +35,7 @@ public class Simulation {
   public static void main(String[] args) {
     Simulation sim = new Simulation();
     int time_seconds = 0;
-    // System.out.println()
+    sim.graphics.set_grid_representation();
 
     while (time_seconds < max_seconds_elapsed) {
       // call tick on all of the variables that we defined above
