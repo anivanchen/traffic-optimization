@@ -40,7 +40,7 @@ public class Simulation {
     while (time_seconds < max_seconds_elapsed) {
       // call tick on all of the variables that we defined above
       for (Car current_car : sim.cars) {
-        current_car.tick();
+        current_car.tick(time_seconds);
       }
       graphics.tick(time_seconds);
       time_seconds++;

@@ -37,8 +37,8 @@ public class Car {
     this.grid_rep = grid_rep;
   }
 
-  public void tick() {
-    update(1);
+  public void tick(int seconds) {
+    update(seconds);
     System.out.println("Does the car have an initialized grid_rep? " + (grid_rep.length > 0));
   }
 
@@ -162,7 +162,6 @@ public class Car {
 
     if (best_path.size() == 0) {
       System.out.println("Could not find path");
-
     }
 
     // We know best path is the set of directions we need, nice thing is that it tells us
@@ -174,9 +173,65 @@ public class Car {
     }
     Pair<Integer> current_position = best_path.get(0);
     Pair<Integer> next_position = best_path.get(1);
-    int diff_x = next_position.get(0) - current_position.get(0);
-    int diff_y = next_position.get(1) - current_position.get(1);
-    current.move((int) (diff_x * (velocity * dt + acceleration * dt * dt / 2)), (int) (diff_y * (velocity * dt + acceleration * dt * dt / 2)));
+    if (best_path.size() > 2) {
+      System.out.println("Checking stoplight positions");
+      // Check if either next_position or third_position is intersection (which we identify w grid nums)
+      // we need to figure out what the current light looks like 
+      // dt is the input time, 
+
+      TrafficSignal sample = new TrafficSignal(new Location(0,0));
+      sample.tick((int) dt); // sets the traffic colors of this sample stoplight
+      ArrayList<Color> current_color_set = sample.getColors();
+
+      Integer[] stoplight_grid_values = {5,6,7,8};
+      int grid_value = grid_rep[next_position.get(0)][next_position.get(1)];
+      boolean found_stoplight = false;
+      int found_value = grid_value;
+      for (int i = 0; i < stoplight_grid_values.length; i++) {
+        if (grid_value == stoplight_grid_values[i]) {
+          // stoplight
+          found_stoplight = true;
+        }
+      }
+      if (found_stoplight) {
+        // Check if the stoplight is red or yellow, if so, slow, if not continue
+        // Check the light for our orientation
+        // Get our orientation from the grid representation
+        Color color = Color.GREEN;
+        if (grid_rep[start.get(0)][start.get(1)] == 5 || grid_rep[start.get(0)][start.get(1)] == 6 || grid_rep[start.get(0)][start.get(1)] == 7 || grid_rep[start.get(0)][start.get(1)] == 8) {
+          // we are already in the stoplight, just continue
+          System.out.println("In stoplight, do nothing");
+        } else if (grid_rep[start.get(0)][start.get(1)] == 1) {
+          // we are going down
+          color = current_color_set.get(0);
+        } else if (grid_rep[start.get(0)][start.get(1)] == 2) {
+          // we are going up
+          color = current_color_set.get(2);
+
+        } else if (grid_rep[start.get(0)][start.get(1)] == 3) {
+          // we are going left
+          color = current_color_set.get(1);
+
+        } else if (grid_rep[start.get(0)][start.get(1)] == 4) {
+          // we are going right
+          color = current_color_set.get(3);
+        }
+        // We have the color now
+        if (color == Color.GREEN) {
+          System.out.println("Green light up ahead, nothing to worry about");
+          int diff_x = next_position.get(0) - current_position.get(0);
+          int diff_y = next_position.get(1) - current_position.get(1);
+          current.move((int) (diff_x * (velocity * dt + acceleration * dt * dt / 2)), (int) (diff_y * (velocity * dt + acceleration * dt * dt / 2)));
+        } else {
+          // Slow down regardless to a stop
+          current.move((int) (0), (int) (0));
+        }
+      }
+    } else {
+      int diff_x = next_position.get(0) - current_position.get(0);
+      int diff_y = next_position.get(1) - current_position.get(1);
+      current.move((int) (diff_x * (velocity * dt + acceleration * dt * dt / 2)), (int) (diff_y * (velocity * dt + acceleration * dt * dt / 2)));
+    }
   }
 
   public void update(Car leadCar, double dt, TrafficSignal trafficSignal) {

@@ -187,7 +187,7 @@ public class MyCanvas extends JFrame{
                     int x = car.getLocation().getX();
                     int y = car.getLocation().getY();
                     g.setColor(Color.black);
-                    g.fillRect(y, x, 30, 10);
+                    g.fillRect(y, x, 15, 15);
                 }
                 // create a JPanel with a raised bevel border
                 // JPanel panel = new JPanel();
