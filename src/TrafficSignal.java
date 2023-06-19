@@ -32,7 +32,7 @@ public class TrafficSignal {
     }
 
     public void tick(int current_seconds) {
-        int seconds_mod = current_seconds % 60;
+        int seconds_mod = current_seconds % 20;
         if (seconds_mod <= 5) {
             this.color.set(0, Color.GREEN);
             this.color.set(1, Color.RED);

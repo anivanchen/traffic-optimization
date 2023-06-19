@@ -39,7 +39,7 @@ public class Car {
 
   public void tick(int seconds) {
     update(seconds);
-    System.out.println("Does the car have an initialized grid_rep? " + (grid_rep.length > 0));
+    // System.out.println("Does the car have an initialized grid_rep? " + (grid_rep.length > 0));
   }
 
   private boolean is_valid_transition(int start_grid_value, int end_grid_value, int direction) {
@@ -99,6 +99,7 @@ public class Car {
     Pair<Integer> goal_cell = new Pair<Integer>((this.end.getX()/squareSize)*2, (this.end.getY()/squareSize)*2);
     ArrayList<ArrayList<Pair<Integer>>> horizon = new ArrayList<ArrayList<Pair<Integer>>>();
     Pair<Integer> start = new Pair<Integer>((int)(2*this.current.getX()/squareSize), (int)(2*this.current.getY()/squareSize));
+    System.out.println("Current x: " + this.current.getX() + " and y: " + this.current.getY());
     System.out.println("Starting location: " + start.toString());
     ArrayList<Pair<Integer>> start_path = new ArrayList<Pair<Integer>>();
     start_path.add(start);
@@ -106,14 +107,14 @@ public class Car {
     horizon.add(start_path);
     boolean found = false;
     while (horizon.size() > 0) {
-      System.out.println("HORIZON:");
-      for (ArrayList<Pair<Integer>> path : horizon) {
-        System.out.println(path);
-      }
+      // System.out.println("HORIZON:");
+      // for (ArrayList<Pair<Integer>> path : horizon) {
+      //   // System.out.println(path);
+      // }
       ArrayList<Pair<Integer>> current_path = horizon.remove(0);
       Pair<Integer> current_node = current_path.get(current_path.size()-1);
       int current_node_grid_rep = grid_rep[current_node.get(0)][current_node.get(1)];
-      System.out.println("Current node: " + current_node.toString() + " has grid rep value " + current_node_grid_rep);
+      // System.out.println("Current node: " + current_node.toString() + " has grid rep value " + current_node_grid_rep);
 
       visited.add(current_node);
       if ((current_node.get(0) == goal_cell.get(0) && current_node.get(1) == goal_cell.get(1)) ||
@@ -121,7 +122,7 @@ public class Car {
           (current_node.get(0) == goal_cell.get(0) && current_node.get(1) == goal_cell.get(1)+1) ||
           (current_node.get(0) == goal_cell.get(0)+1 && current_node.get(1) == goal_cell.get(1)+1)) {
         // Have we found the goal, we need to check the full 4-grid square
-        System.out.println("Found best path!");
+        // System.out.println("Found best path!");
         best_path = current_path;
         break;
       }
@@ -169,6 +170,7 @@ public class Car {
     // Look at first two cells in the path, determine if we go straight or turn
     if (best_path.size() == 1) {
       // Car is DONE!!!!! DO NOT MOVE ANYMORE, AT GOAL
+      System.out.println("At goal, done");
       return;
     }
     Pair<Integer> current_position = best_path.get(0);
@@ -221,16 +223,32 @@ public class Car {
           System.out.println("Green light up ahead, nothing to worry about");
           int diff_x = next_position.get(0) - current_position.get(0);
           int diff_y = next_position.get(1) - current_position.get(1);
-          current.move((int) (diff_x * (velocity * dt + acceleration * dt * dt / 2)), (int) (diff_y * (velocity * dt + acceleration * dt * dt / 2)));
+          int newnewx = (int) (diff_x * (velocity + acceleration / 2));
+          int newnewy = (int) (diff_y * (velocity + acceleration / 2));
+          System.out.println("Diffs: " + diff_x + "," + diff_y);
+          System.out.println("Velocity: " + velocity + " and dt: " + dt + " and accerleration: " + acceleration);
+          System.out.println("Moving1: " + newnewx + ", " + newnewy);
+          current.move(newnewx, newnewy);
         } else {
           // Slow down regardless to a stop
           current.move((int) (0), (int) (0));
         }
+      } else {
+        int diff_x = next_position.get(0) - current_position.get(0);
+        int diff_y = next_position.get(1) - current_position.get(1);
+
+        System.out.println("No stoplight in sight, moving: ");
+        current.move((int) diff_x* (int) velocity, (int) diff_y* (int) velocity);
       }
     } else {
       int diff_x = next_position.get(0) - current_position.get(0);
       int diff_y = next_position.get(1) - current_position.get(1);
-      current.move((int) (diff_x * (velocity * dt + acceleration * dt * dt / 2)), (int) (diff_y * (velocity * dt + acceleration * dt * dt / 2)));
+      System.out.println("Diffs: " + diff_x + "," + diff_y);
+      System.out.println("Velocity: " + velocity + " and dt: " + dt + " and accerleration: " + acceleration);
+      int newx = (int) (diff_x * (velocity + acceleration  / 2));
+      int newy = (int) (diff_y * (velocity + acceleration  / 2));
+      System.out.println("New position: " + newx + "," + newy);
+      current.move(newx, newy);
     }
   }
 
