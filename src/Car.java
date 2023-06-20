@@ -10,6 +10,8 @@ public class Car {
   private double length, angle, velocity, acceleration, maxAngle, maxVelocity, currentMaxVelocity, maxAcceleration;
   private int[][] grid_rep;
 
+  public boolean car_can_move = true;
+
   private boolean stopped;
 
   public Car(Location start, Location end, double length, double maxAngle, double maxVelocity, double maxAcceleration) {
@@ -37,8 +39,8 @@ public class Car {
     this.grid_rep = grid_rep;
   }
 
-  public void tick(int seconds) {
-    update(seconds);
+  public boolean tick(int seconds) {
+    return update(seconds);
     // System.out.println("Does the car have an initialized grid_rep? " + (grid_rep.length > 0));
   }
 
@@ -81,9 +83,9 @@ public class Car {
     return (x >= 0 && x < this.grid_rep.length && y >= 0 && y < this.grid_rep[0].length);
   }
 
-  public void update(double dt) {
+  public boolean update(double dt) {
     if (stopped) {
-      return;
+      return true;
     }
 
     if (velocity > currentMaxVelocity) {
@@ -171,7 +173,7 @@ public class Car {
     if (best_path.size() == 1) {
       // Car is DONE!!!!! DO NOT MOVE ANYMORE, AT GOAL
       System.out.println("At goal, done");
-      return;
+      return false;
     }
     Pair<Integer> current_position = best_path.get(0);
     Pair<Integer> next_position = best_path.get(1);
@@ -190,7 +192,12 @@ public class Car {
       boolean found_stoplight = false;
       int found_value = grid_value;
       for (int i = 0; i < stoplight_grid_values.length; i++) {
-        if (grid_value == stoplight_grid_values[i]) {
+        if (grid_value == stoplight_grid_values[i] && (
+          grid_rep[current_position.get(0)][current_position.get(1)] != 5 && 
+          grid_rep[current_position.get(0)][current_position.get(1)] != 6 && 
+          grid_rep[current_position.get(0)][current_position.get(1)] != 7 && 
+          grid_rep[current_position.get(0)][current_position.get(1)] != 8
+        )) {
           // stoplight
           found_stoplight = true;
         }
@@ -219,7 +226,7 @@ public class Car {
           color = current_color_set.get(3);
         }
         // We have the color now
-        if (color == Color.GREEN) {
+        if (color == Color.GREEN || color == Color.YELLOW) {
           System.out.println("Green light up ahead, nothing to worry about");
           int diff_x = next_position.get(0) - current_position.get(0);
           int diff_y = next_position.get(1) - current_position.get(1);
@@ -228,7 +235,9 @@ public class Car {
           System.out.println("Diffs: " + diff_x + "," + diff_y);
           System.out.println("Velocity: " + velocity + " and dt: " + dt + " and accerleration: " + acceleration);
           System.out.println("Moving1: " + newnewx + ", " + newnewy);
-          current.move(newnewx, newnewy);
+          if (car_can_move) {
+            current.move(newnewx, newnewy);
+          }
         } else {
           // Slow down regardless to a stop
           current.move((int) (0), (int) (0));
@@ -237,8 +246,13 @@ public class Car {
         int diff_x = next_position.get(0) - current_position.get(0);
         int diff_y = next_position.get(1) - current_position.get(1);
 
-        System.out.println("No stoplight in sight, moving: ");
-        current.move((int) diff_x* (int) velocity, (int) diff_y* (int) velocity);
+        System.out.println("No stoplight in sight, moving: " + diff_x + ", " + diff_y + " and velocity: " + velocity);
+        if (car_can_move) {
+          System.out.println("And car can move because no car in front");
+          current.move((int) diff_x* (int) velocity, (int) diff_y* (int) velocity);
+        } else {
+          System.out.println("Except car can't move");
+        }
       }
     } else {
       int diff_x = next_position.get(0) - current_position.get(0);
@@ -248,42 +262,11 @@ public class Car {
       int newx = (int) (diff_x * (velocity + acceleration  / 2));
       int newy = (int) (diff_y * (velocity + acceleration  / 2));
       System.out.println("New position: " + newx + "," + newy);
-      current.move(newx, newy);
+      if (car_can_move) {
+        current.move(newx, newy);
+      }
     }
-  }
-
-  public void update(Car leadCar, double dt, TrafficSignal trafficSignal) {
-    if(leadCar.velocity > velocity){
-      slow(leadCar.velocity);
-    }
-    //TODO: FIX THIS
-    // if(trafficSignal.getCurrentCycle() != Color.GREEN){
-    //   slow(0);
-    // }
-    if(velocity > maxVelocity){
-      double d = velocity * dt;
-      velocity -= acceleration * dt;
-      current.move((int) (d + 0.5 * acceleration * dt * dt), 0);
-    } else if (velocity < maxVelocity){
-      double d = velocity * dt;
-      velocity += acceleration * dt;
-      current.move((int) (d + 0.5 * acceleration * dt * dt), 0);
-    }
-    // if (velocity + acceleration * dt < 0) {
-    //   current.x -= 0.5 * velocity * velocity / acceleration;
-    //   velocity = 0;
-    // } else {
-    //   velocity += acceleration * dt;
-    //   current.x += velocity * dt + acceleration * dt * dt / 2;
-    // }
-
-    // double alpha = 0;
-    // double dX = leadCar.getLocation().getX() - current.getX() - leadCar.getLength();
-    // double dV = velocity - leadCar.getVelocity();
-
-    // alpha = (0 + Math.max(0, 1 * velocity + dV * velocity / sqrtAB));
-
-    current = current.move(0, 0);
+    return true;
   }
 
   public Location getLocation() {

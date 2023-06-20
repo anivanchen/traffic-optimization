@@ -14,8 +14,9 @@ public class MyCanvas extends JFrame{
 
     private Canvas c;
     public int current_time = 0;
-    private ArrayList<Car> cars;
+    public ArrayList<Car> cars;
     private ArrayList<Road> roads;
+    private int[][] grid_rep;
 
     public void set_grid_representation() {
         int canvasWidth = 800;
@@ -68,6 +69,8 @@ public class MyCanvas extends JFrame{
         for (Car car_instance: this.cars) {
             car_instance.set_grid_rep(grid_rep);
         }
+
+        this.grid_rep = grid_rep;
     }
 
     public MyCanvas(ArrayList<Car> cars, ArrayList<Road> roads) {
@@ -183,19 +186,51 @@ public class MyCanvas extends JFrame{
                 }
 
                 for (int i = 0; i < cars.size(); i++) {
+                    // Toolkit t=Toolkit.getDefaultToolkit();  
+                    // Image i=t.getImage("CAR.png");  
+                    // g.drawImage(i,50,50);  
                     Car car = cars.get(i);
                     int x = car.getLocation().getX();
                     int y = car.getLocation().getY();
-                    g.setColor(Color.black);
-                    g.fillRect(y, x, 15, 15);
-                }
-                // create a JPanel with a raised bevel border
-                // JPanel panel = new JPanel();
-                // Border border = BorderFactory.createRaisedBevelBorder();
-                // panel.setBorder(border);
 
-                // // add the panel to the canvas
-                // c.add(panel);
+                    int grid_x = (int) x*2/80;
+                    int grid_y = (int) y*2/80;
+                    g.setColor(Color.black);
+
+                    if (grid_rep[grid_x][grid_y] == 1) {
+                        g.fillRect(y, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y;
+                        // cars.get(i).rendered_y = x+12;
+                    } else if (grid_rep[grid_x][grid_y] == 2) {
+                        g.fillRect(y+28, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y+28;
+                        // cars.get(i).rendered_y = x+12;
+                    } else if (grid_rep[grid_x][grid_y] == 3) {
+                        g.fillRect(y+12, x+28, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x+28;
+                    } else if (grid_rep[grid_x][grid_y] == 4) {
+                        g.fillRect(y+12, x, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x;
+                    } else if (grid_rep[grid_x][grid_y] == 5) {
+                        g.fillRect(y+12, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x+12;
+                    } else if (grid_rep[grid_x][grid_y] == 6) {
+                        g.fillRect(y+12, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x+12;
+                    } else if (grid_rep[grid_x][grid_y] == 7) {
+                        g.fillRect(y+12, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x+12;
+                    } else if (grid_rep[grid_x][grid_y] == 8) {
+                        g.fillRect(y+12, x+12, 15, 15);
+                        // cars.get(i).rendered_x = y+12;
+                        // cars.get(i).rendered_y = x+12;
+                    }
+                }
 
                 // set color to red
                 g.setColor(Color.black);
@@ -214,6 +249,94 @@ public class MyCanvas extends JFrame{
         add(c);
         setSize(400, 300);
         setVisible(true);
+    }
+
+    public void tellCarsThatAreBlockedToNotMove() {
+        // loop over each of the cars, get its position in grid representation
+        // internal loop over the other cars, check if they are in the grid "in front"
+        // we know in front based on the value of grid_rep
+
+        ArrayList<Boolean> car_should_move = new ArrayList<>(Collections.nCopies(this.cars.size(), true));
+
+        for (int i = 0; i < this.cars.size(); i++) {
+            Car current_car = this.cars.get(i);
+            // get grid position
+            int x = current_car.getLocation().getX();
+            int y = current_car.getLocation().getY();
+            int grid_square_x = (int)x*2/80;
+            int grid_square_y = (int)y*2/80;
+            int grid_rep_value = grid_rep[grid_square_x][grid_square_y];
+            if (grid_rep_value == 1) {
+                // going down, so lets check two grid squares in front
+                Pair<Integer> one_below = new Pair<Integer>(grid_square_x + 1, grid_square_y);
+                if (anyCarInSquares(one_below.get(0), one_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+
+                Pair<Integer> two_below = new Pair<Integer>(grid_square_x + 2, grid_square_y);
+                if (anyCarInSquares(two_below.get(0), two_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+            } else if (grid_rep_value == 2) {
+                Pair<Integer> one_below = new Pair<Integer>(grid_square_x - 1, grid_square_y);
+                if (anyCarInSquares(one_below.get(0), one_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+
+                Pair<Integer> two_below = new Pair<Integer>(grid_square_x - 2, grid_square_y);
+                if (anyCarInSquares(two_below.get(0), two_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+            } else if (grid_rep_value == 3) {
+                Pair<Integer> one_below = new Pair<Integer>(grid_square_x, grid_square_y - 1);
+                if (anyCarInSquares(one_below.get(0), one_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+
+                Pair<Integer> two_below = new Pair<Integer>(grid_square_x, grid_square_y - 2);
+                if (anyCarInSquares(two_below.get(0), two_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+
+            } else if (grid_rep_value == 4) {
+                Pair<Integer> one_below = new Pair<Integer>(grid_square_x, grid_square_y + 1);
+                if (anyCarInSquares(one_below.get(0), one_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+
+                Pair<Integer> two_below = new Pair<Integer>(grid_square_x, grid_square_y + 2);
+                if (anyCarInSquares(two_below.get(0), two_below.get(1))) {
+                    car_should_move.set(i, false);
+                }
+            }
+        }
+
+        System.out.println("Created car_should move which has size : " + car_should_move.size() + " and values: ");
+        for (Boolean elem : car_should_move) {
+            System.out.println("Element: " + elem);
+        }
+
+        for (int i = 0; i < car_should_move.size(); i++) {
+            System.out.println("Car " + i + " should move? " + car_should_move.get(i));
+            this.cars.get(i).car_can_move = car_should_move.get(i);
+        }
+    }
+
+    public boolean anyCarInSquares(int grid_sq_x, int grid_sq_y) {
+        // iterate through cars check if any are in either square
+        boolean found = false;
+
+        for (int i = 0; i < this.cars.size(); i++) {
+            Car current_car = this.cars.get(i);
+            int current_car_grid_x = (int)current_car.getLocation().getX()*2/80;
+            int current_car_grid_y = (int)current_car.getLocation().getY()*2/80;
+            System.out.println("Checking car with grid position " + current_car_grid_x + ", " + current_car_grid_y + ", comparing to " + grid_sq_x + " and " + grid_sq_y);
+            if (current_car_grid_x == grid_sq_x  && current_car_grid_y == grid_sq_y) {
+                System.out.println("Found a match");
+                found = true;
+            }
+        }
+        return found;
     }
 
     public void tick(int time_seconds) {
