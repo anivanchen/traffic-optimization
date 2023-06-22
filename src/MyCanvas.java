@@ -174,12 +174,12 @@ public class MyCanvas extends JFrame{
                             } else if (x == road.getStart().getX() && x == road.getEnd().getX() || y == road.getStart().getY() && y == road.getEnd().getY()) {
                                 // Check road
                                 already_found_road_at_given_position = true;
-                                g.setColor(Color.gray);
+                                g.setColor(Color.darkGray);
                                 g.fillRect(x,y,squareSize,squareSize);
                             } else {
                                 if (!already_found_road_at_given_position) {
                                     // Non-road
-                                    g.setColor(Color.blue);
+                                    g.setColor(Color.lightGray);
                                     g.fillRect(x,y,squareSize,squareSize);
                                 }
                             }
@@ -197,7 +197,7 @@ public class MyCanvas extends JFrame{
 
                     int grid_x = (int) x*2/80;
                     int grid_y = (int) y*2/80;
-                    g.setColor(Color.black); 
+                    g.setColor(Color.cyan); 
                     if (grid_rep[grid_x][grid_y] == 1) {
                         g.fillRect(y, x, 15, 15);
                         System.out.println("lane: "+1);
