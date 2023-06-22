@@ -202,6 +202,9 @@ public class Car {
           found_stoplight = true;
         }
       }
+      System.out.println("found_stop_light: "+found_stoplight);
+      System.out.println("start x: "+start.get(0)+"  y: "+start.get(1));
+      System.out.println("place at: "+grid_rep[start.get(0)][start.get(1)]);
       if (found_stoplight) {
         // Check if the stoplight is red or yellow, if so, slow, if not continue
         // Check the light for our orientation
@@ -226,6 +229,15 @@ public class Car {
           color = current_color_set.get(3);
         }
         // We have the color now
+        if(color==Color.GREEN){
+          System.out.println("color: green");
+        }
+        if(color==Color.YELLOW){
+          System.out.println("color: yellow");
+        }
+        if(color==Color.RED){
+          System.out.println("color: red");
+        }
         if (color == Color.GREEN || color == Color.YELLOW) {
           System.out.println("Green light up ahead, nothing to worry about");
           int diff_x = next_position.get(0) - current_position.get(0);

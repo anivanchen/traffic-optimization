@@ -2,8 +2,10 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.util.*;
 import java.lang.*;
 import java.io.*;
@@ -195,22 +197,25 @@ public class MyCanvas extends JFrame{
 
                     int grid_x = (int) x*2/80;
                     int grid_y = (int) y*2/80;
-                    g.setColor(Color.black);
-
+                    g.setColor(Color.black); 
                     if (grid_rep[grid_x][grid_y] == 1) {
-                        g.fillRect(y, x+12, 15, 15);
+                        g.fillRect(y, x, 15, 15);
+                        System.out.println("lane: "+1);
                         // cars.get(i).rendered_x = y;
                         // cars.get(i).rendered_y = x+12;
                     } else if (grid_rep[grid_x][grid_y] == 2) {
                         g.fillRect(y+28, x+12, 15, 15);
+                        System.out.println("lane: "+2);
                         // cars.get(i).rendered_x = y+28;
                         // cars.get(i).rendered_y = x+12;
                     } else if (grid_rep[grid_x][grid_y] == 3) {
-                        g.fillRect(y+12, x+28, 15, 15);
+                        g.fillRect(y+12, x+48, 15, 15);
+                        System.out.println("lane: "+3);
                         // cars.get(i).rendered_x = y+12;
                         // cars.get(i).rendered_y = x+28;
                     } else if (grid_rep[grid_x][grid_y] == 4) {
-                        g.fillRect(y+12, x, 15, 15);
+                        g.fillRect(y, x, 15, 15);
+                        System.out.println("lane: "+4);
                         // cars.get(i).rendered_x = y+12;
                         // cars.get(i).rendered_y = x;
                     } else if (grid_rep[grid_x][grid_y] == 5) {
